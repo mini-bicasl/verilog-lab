@@ -1,0 +1,50 @@
+name: AI-Assisted Task
+description: Create a structured AI task for RTL/Testbench/Documentation/Verification
+title: "[AI] "
+labels: ['AI-task']
+
+# Form body fields
+body:
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: "Select Issue Type"
+      description: "Choose the type of AI task for this issue."
+      options:
+        - RTL
+        - Testbench
+        - Documentation
+        - Verification
+        - Setup
+      default: RTL
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue_description
+    attributes:
+      label: "Issue Description"
+      description: "Provide a detailed description of the module, task, or specification for the AI agent."
+      placeholder: "Describe inputs, outputs, functionality, expected behavior, or reference specification."
+      value: ""
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Priority"
+      description: "Set the priority of this AI task."
+      options:
+        - High
+        - Medium
+        - Low
+      default: Medium
+
+  - type: textarea
+    id: additional_notes
+    attributes:
+      label: "Additional Notes (Optional)"
+      description: "Any extra instructions, references, or constraints for the AI agent."
+      placeholder: "Example: Follow company coding style, include FSM comments, or add specific test cases."
+      value: ""
