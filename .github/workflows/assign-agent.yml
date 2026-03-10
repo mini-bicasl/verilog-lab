@@ -6,30 +6,43 @@ on:
   pull_request:
     types: [opened]
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   assign-agent:
     runs-on: ubuntu-latest
     steps:
-      - name: Determine issue type
+      - name: Determine issue type and assign agent
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issue = context.payload.issue || context.payload.pull_request;
-            if (!issue) return;
+            const issueNumber = context.payload.issue?.number || context.payload.pull_request?.number;
+            if (!issueNumber) return;
+
             let assignee = '';
-            if (issue.title.toLowerCase().includes('rtl')) {
-              assignee = 'CopilotRTL';
-            } else if (issue.title.toLowerCase().includes('testbench') || issue.labels.some(l => l.name === 'tb')) {
-              assignee = 'CopilotTB';
-            } else if (issue.title.toLowerCase().includes('doc')) {
-              assignee = 'CopilotDoc';
-            }
+            const labels = (context.payload.issue?.labels || context.payload.pull_request?.labels || []).map(l => l.name.toLowerCase());
+
+            // Assign based on title or label
+            const title = (context.payload.issue?.title || context.payload.pull_request?.title || '').toLowerCase();
+            if (title.includes('rtl') || labels.includes('rtl')) assignee = 'CopilotRTL';
+            else if (title.includes('testbench') || labels.includes('tb')) assignee = 'CopilotTB';
+            else if (title.includes('doc') || labels.includes('doc')) assignee = 'CopilotDoc';
+
             if (assignee) {
               await github.issues.addAssignees({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: issue.number,
+                issue_number: issueNumber,
                 assignees: [assignee]
+              });
+
+              await github.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `@${assignee} Assigned. Please follow the structured template for generation.`
               });
             }
