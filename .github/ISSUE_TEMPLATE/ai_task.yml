@@ -23,11 +23,11 @@ body:
     id: issue_description
     attributes:
       label: "Issue Description"
-      description: "Provide a detailed description of the module, task, or specification for the AI agent."
-      placeholder: "Describe inputs, outputs, functionality, expected behavior, or reference specification."
-      value: "Enter the detailed description here."  # <-- non-empty default string
+      description: "Optional description for the AI agent. The agent will read ARCHITECTURE.md and PLAN.md automatically."
+      placeholder: "Brief instructions for AI (optional)"
+      value: "AI agent will parse ARCHITECTURE.md and PLAN.md to determine the task."
     validations:
-      required: true
+      required: false
 
   - type: dropdown
     id: priority
@@ -46,6 +46,6 @@ body:
     id: additional_notes
     attributes:
       label: "Additional Notes (Optional)"
-      description: "Any extra instructions, references, or constraints for the AI agent."
-      placeholder: "Example: Follow company coding style, include FSM comments, or add specific test cases."
-      value: "Add optional notes here."  # <-- non-empty default string
+      description: "Extra instructions for the AI agent."
+      placeholder: "Example: follow coding style, include FSM comments, specific test cases."
+      value: "No additional notes."
