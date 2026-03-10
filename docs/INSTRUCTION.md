@@ -28,6 +28,8 @@ On GitHub: **New issue** → choose one of these four. Each form only shows the 
 - Creating issues and PRs freely; the pipeline will open `ai/rtl-*`, `ai/tb-*`, and `ai/doc-*` branches and PRs in **your fork**.
 - Keeping the upstream repo clean—no experimental branches or test issues there.
 
+**Note:** GitHub allows **one fork per user** per repo. For multiple experiments, use different **branches** in your single fork (the pipeline already creates `ai/rtl-*`, `ai/tb-*`, `ai/doc-*` per run). To start a fresh experiment, you can create a new branch from `main` in your fork and open issues there; or use a separate GitHub account/org if you need another fork.
+
 Clone your fork, then open issues on the fork’s GitHub page and follow the steps below. When you are happy with the result, you can open a pull request from your fork to the upstream repo if you want to contribute back.
 
 ---
@@ -96,7 +98,7 @@ Once you submit the issue:
    - `docs/PLAN.md` (if present)
    - Optional: `INTERFACE_SPEC.md`, `NAMING_CONVENTIONS.md`, `TESTPLAN.md` (root or `docs/`)
 4. It calls the AI agents with that context and the module name; they generate RTL, TB, and docs and write JSON to `results/`.
-5. The workflow commits on `ai/...` branches and opens PR(s); you label **`ready-to-merge`** to auto-merge.
+5. The workflow commits on `ai/...` branches and opens PR(s) against the repo’s default branch; you label **`ready-to-merge`** to auto-merge.
 
 ---
 
@@ -110,7 +112,7 @@ Verification can be done both manually and via the **“AI Verification”** iss
 2. When you are satisfied that a PR is correct:
    - Add the label **`ready-to-merge`** to the pull request.
 3. The **same `ai-pipeline.yml` workflow** listens for `pull_request: labeled` events:
-   - When it sees the label **`ready-to-merge`**, it will automatically merge the PR into the main branch.
+   - When it sees the label **`ready-to-merge`**, it will automatically merge the PR into the repository’s **default branch** (usually `main`).
 4. If coverage or tests fail, or behavior is not as expected:
    - Open a new issue with the **“AI Verification”** template (`.github/ISSUE_TEMPLATE/4_verification.yml`).
    - Optionally pick **Module name** and **What do you want to improve?** (add tests, tighten constraints, refine RTL/docs). Description can stay blank.

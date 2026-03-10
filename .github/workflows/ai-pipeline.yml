@@ -110,7 +110,8 @@ jobs:
 
       - name: Open Pull Request
         run: |
-          gh pr create --base main --head "ai/rtl-${{ needs.parse_issue.outputs.module_name }}-${{ github.run_id }}" \
+          BASE="${{ github.event.repository.default_branch || 'main' }}"
+          gh pr create --base "$BASE" --head "ai/rtl-${{ needs.parse_issue.outputs.module_name }}-${{ github.run_id }}" \
             --title "[AI] RTL: ${{ needs.parse_issue.outputs.module_name }}" \
             --body "Generated from issue #${{ github.event.issue.number }}. Add label **ready-to-merge** to merge."
 
@@ -170,7 +171,8 @@ jobs:
 
       - name: Open Pull Request
         run: |
-          gh pr create --base main --head "ai/tb-${{ needs.parse_issue.outputs.module_name }}-${{ github.run_id }}" \
+          BASE="${{ github.event.repository.default_branch || 'main' }}"
+          gh pr create --base "$BASE" --head "ai/tb-${{ needs.parse_issue.outputs.module_name }}-${{ github.run_id }}" \
             --title "[AI] Testbench: ${{ needs.parse_issue.outputs.module_name }}" \
             --body "Generated from issue #${{ github.event.issue.number }}. Add label **ready-to-merge** to merge."
 
@@ -228,7 +230,8 @@ jobs:
 
       - name: Open Pull Request
         run: |
-          gh pr create --base main --head "ai/doc-${{ needs.parse_issue.outputs.module_name }}-${{ github.run_id }}" \
+          BASE="${{ github.event.repository.default_branch || 'main' }}"
+          gh pr create --base "$BASE" --head "ai/doc-${{ needs.parse_issue.outputs.module_name }}-${{ github.run_id }}" \
             --title "[AI] Documentation: ${{ needs.parse_issue.outputs.module_name }}" \
             --body "Generated from issue #${{ github.event.issue.number }}. Add label **ready-to-merge** to merge."
 
