@@ -1,10 +1,11 @@
 name: RTL Generator
 runs-on: ubuntu-latest
+
 steps:
-  - name: Checkout repo
+  - name: Checkout repository
     uses: actions/checkout@v3
 
-  - name: Run RTL AI Agent
+  - name: Generate RTL from ARCHITECTURE.md
     uses: actions/github-script@v6
     with:
       github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -12,23 +13,20 @@ steps:
         const fs = require('fs');
         const path = require('path');
 
-        // Read ARCHITECTURE.md for module details
-        const archFile = 'docs/ARCHITECTURE.md';
-        const archContent = fs.readFileSync(archFile, 'utf8');
+        // Read ARCHITECTURE.md for module info
+        const arch = fs.readFileSync('docs/ARCHITECTURE.md', 'utf8');
+        const plan = fs.readFileSync('docs/PLAN.md', 'utf8');
 
-        // AI prompt template
+        // Load RTL prompt template
         const template = fs.readFileSync('.github/agents/prompt-templates/rtl-template.md', 'utf8');
-        const prompt = template.replace('{{ARCHITECTURE_CONTENT}}', archContent);
+        const prompt = template.replace('{{ARCHITECTURE_CONTENT}}', arch).replace('{{PLAN_CONTENT}}', plan);
 
-        // Call AI to generate RTL (pseudo-code)
+        // Call AI service (pseudo-code)
         const ai_response = await generateRTL(prompt);
 
-        // Save output RTL files
+        // Write RTL files
         ai_response.files.forEach(f => {
           const fullPath = path.join(process.cwd(), f.path);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
           fs.writeFileSync(fullPath, f.content);
         });
-
-        // Optionally update PLAN.md checklist for this module
-        // ...
