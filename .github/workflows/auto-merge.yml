@@ -4,22 +4,37 @@ on:
   pull_request:
     types: [labeled, synchronize, opened]
 
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Merge PR if label is ready
+      - name: Merge PR if ready and verified
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const pr = context.payload.pull_request;
             if (!pr) return;
-            if (pr.labels.some(l => l.name === 'ready-to-merge')) {
-              await github.pulls.merge({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-                merge_method: 'squash'
-              });
-            }
+
+            // Skip draft PRs
+            if (pr.draft) return;
+
+            // Only merge if label 'ready-to-merge' exists
+            if (!pr.labels.some(l => l.name === 'ready-to-merge')) return;
+
+            // Optional: check for simulation_passed JSON in PR files (pseudo)
+            // const files = await github.pulls.listFiles({...});
+            // const verified = files.some(f => f.filename.endsWith('json') && parseSimulationPassed(f));
+            // if (!verified) return;
+
+            // Merge PR
+            await github.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              merge_method: 'squash'
+            });
