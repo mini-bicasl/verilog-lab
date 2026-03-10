@@ -1,0 +1,79 @@
+name: AI-Assisted RTL Pipeline
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened, labeled, synchronize]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  ai-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Assign AI agent and post prompt
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueNumber = context.payload.issue?.number || context.payload.pull_request?.number;
+            if (!issueNumber) return;
+
+            const labels = (context.payload.issue?.labels || context.payload.pull_request?.labels || []).map(l => l.name.toLowerCase());
+            const title = (context.payload.issue?.title || context.payload.pull_request?.title || '').toLowerCase();
+
+            let assignee = '';
+            if (title.includes('rtl') || labels.includes('rtl')) assignee = 'CopilotRTL';
+            else if (title.includes('testbench') || labels.includes('tb')) assignee = 'CopilotTB';
+            else if (title.includes('doc') || labels.includes('doc')) assignee = 'CopilotDoc';
+
+            if (assignee) {
+              await github.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                assignees: [assignee]
+              });
+
+              await github.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `@${assignee} Assigned. Please follow the structured template in '.github/agents/prompt-templates/' to generate outputs.`
+              });
+            }
+
+      - name: Auto-merge PR if ready and verified
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            if (!pr) return;
+
+            // Skip draft PRs
+            if (pr.draft) return;
+
+            // Only merge if label 'ready-to-merge' exists
+            if (!pr.labels.some(l => l.name === 'ready-to-merge')) return;
+
+            // Optional: parse simulation/coverage JSON in PR (pseudo-code)
+            // const files = await github.pulls.listFiles({...});
+            // const verified = files.some(f => f.filename.endsWith('.json') && parseSimulationPassed(f));
+            // if (!verified) return;
+
+            // Merge PR
+            await github.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              merge_method: 'squash'
+            });
