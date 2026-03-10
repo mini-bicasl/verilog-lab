@@ -1,0 +1,35 @@
+name: Auto-assign AI Agent
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  assign-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine issue type
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue || context.payload.pull_request;
+            if (!issue) return;
+            let assignee = '';
+            if (issue.title.toLowerCase().includes('rtl')) {
+              assignee = 'CopilotRTL';
+            } else if (issue.title.toLowerCase().includes('testbench') || issue.labels.some(l => l.name === 'tb')) {
+              assignee = 'CopilotTB';
+            } else if (issue.title.toLowerCase().includes('doc')) {
+              assignee = 'CopilotDoc';
+            }
+            if (assignee) {
+              await github.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                assignees: [assignee]
+              });
+            }
