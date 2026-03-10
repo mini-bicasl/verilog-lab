@@ -20,6 +20,18 @@ On GitHub: **New issue** → choose one of these four. Each form only shows the 
 
 ---
 
+## **Before you begin – Fork for experiments**
+
+**We recommend forking this repository** before running the AI workflow. Use your fork for:
+
+- Trying the Specification, Planning, Implementation, and Verification flow without touching the upstream repo.
+- Creating issues and PRs freely; the pipeline will open `ai/rtl-*`, `ai/tb-*`, and `ai/doc-*` branches and PRs in **your fork**.
+- Keeping the upstream repo clean—no experimental branches or test issues there.
+
+Clone your fork, then open issues on the fork’s GitHub page and follow the steps below. When you are happy with the result, you can open a pull request from your fork to the upstream repo if you want to contribute back.
+
+---
+
 ## **Step 1: Specification – Generate Architecture Document**
 
 Goal: turn your rough idea (e.g. “commercial server-grade DDR4 controller”) into a structured architecture.
@@ -138,6 +150,7 @@ After executing tasks, your repository should include:
 
 ## **Best Practices**
 
+- **Fork the repo for experiments** so the upstream stays clean; run issues and PRs in your fork, then contribute back via pull request when ready.
 - Always **start with `docs/ARCHITECTURE.md`**; it is the single source of truth for modules and interfaces.
 - Keep `docs/PLAN.md` up to date; it drives which Implementation issues you create.
 - Use **structured AI prompts** from `.github/agents/prompt-templates/` as a reference when refining templates or agent behavior.
