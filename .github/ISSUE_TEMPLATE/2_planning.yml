@@ -1,0 +1,25 @@
+name: AI Planning
+description: Generate or update the implementation plan (docs/PLAN.md) from ARCHITECTURE.md
+title: "[AI] Planning – "
+labels: ['AI-task']
+
+body:
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: "Select Issue Type"
+      description: "This form creates a Planning issue. The workflow uses this to route; no code generation runs."
+      options:
+        - Planning
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue_description
+    attributes:
+      label: "Hint (optional)"
+      description: "Leave blank if you prefer. Agents will use ARCHITECTURE.md to devise docs/PLAN.md (modules, dependencies, testbench/docs requirements, implementation order)."
+      placeholder: "e.g. Create an implementation plan for the design in ARCHITECTURE.md with modules, dependencies, and implementation order."
+    validations:
+      required: false

@@ -1,0 +1,34 @@
+name: AI Implementation
+description: Generate RTL, testbench, and documentation for one module (uses ARCHITECTURE.md and PLAN.md)
+title: "[AI] Implementation – "
+labels: ['AI-task']
+
+body:
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: "Select Issue Type"
+      description: "This form creates an Implementation issue. The workflow will run RTL, Testbench, and Documentation agents for the module you name below."
+      options:
+        - Implementation
+      default: 0
+    validations:
+      required: true
+
+  - type: input
+    id: module_name
+    attributes:
+      label: "Module name"
+      description: "Required. Must match a module in ARCHITECTURE.md (e.g. ddr4_ctrl_top, alu8, uart_tx). Used for rtl/<name>.v, tb/<name>_tb.v, docs/<name>.md."
+      placeholder: "e.g. ddr4_ctrl_top, alu8, uart_tx"
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue_description
+    attributes:
+      label: "Description (optional)"
+      description: "Leave blank and the agents will infer behavior from ARCHITECTURE.md and docs/PLAN.md. Optionally add a short hint (e.g. implement per PLAN.md)."
+      placeholder: "Optional: e.g. Implement this module according to ARCHITECTURE.md and PLAN.md."
+    validations:
+      required: false

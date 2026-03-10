@@ -11,9 +11,11 @@ Internally, the **Implementation** phase fans out to three specialized agents:
 
 ## How the end-to-end workflow uses these agents
 
-1. **User opens an AI issue** with the [AI Task Form](../ISSUE_TEMPLATE/ai_task.yml):
-   - Chooses Issue Type: `Specification`, `Planning`, `Implementation`, or `Verification`.
-   - Optionally sets `Module name` (required for `Implementation`).
+1. **User opens an AI issue** by choosing one of the four issue templates:
+   - [AI Specification](../ISSUE_TEMPLATE/1_specification.yml) – high-level idea / ARCHITECTURE.md
+   - [AI Planning](../ISSUE_TEMPLATE/2_planning.yml) – implementation plan / PLAN.md
+   - [AI Implementation](../ISSUE_TEMPLATE/3_implementation.yml) – one module (requires module name) → RTL + TB + docs
+   - [AI Verification](../ISSUE_TEMPLATE/4_verification.yml) – tests, constraints, or refinements (optional module + focus checkboxes)
 2. **Workflow:** [ai-pipeline.yml](../workflows/ai-pipeline.yml) runs:
    - Parses the issue body to determine the phase and module name.
    - Builds a **context file** from:

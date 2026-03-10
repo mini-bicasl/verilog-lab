@@ -1,12 +1,20 @@
 # AI-Assisted RTL Project Workflow Instructions
 
-This document explains the step-by-step workflow for developing RTL projects using AI-assisted tools (Copilot or other LLM agents). The flow is organized around three phases:
+This document explains the step-by-step workflow for developing RTL projects using AI-assisted tools (Copilot or other LLM agents). The flow is organized around four **issue templates**; you pick the template that matches the phase so each form only shows the fields you need.
 
 - **Specification** – capture the high-level idea and architecture.
 - **Planning** – break the design into modules and tasks.
-- **Implementation** – generate RTL, testbenches, and documentation for each module.
+- **Implementation** – generate RTL, testbenches, and documentation for one module.
+- **Verification** – add tests, tighten constraints, or refine RTL/docs.
 
-Verification tasks can be added at any point to improve coverage and test quality.
+| Template              | When to use |
+|-----------------------|-------------|
+| **AI Specification**  | High-level idea → generate/update `docs/ARCHITECTURE.md`. |
+| **AI Planning**       | Turn architecture into `docs/PLAN.md` (modules, dependencies, order). |
+| **AI Implementation** | Generate RTL + testbench + docs for **one module** (requires module name). |
+| **AI Verification**  | Add tests, tighten constraints, or refine RTL/docs (optional module + focus checkboxes). |
+
+On GitHub: **New issue** → choose one of these four. Each form only shows the fields needed for that phase.
 
 ---
 
@@ -14,19 +22,17 @@ Verification tasks can be added at any point to improve coverage and test qualit
 
 Goal: turn your rough idea (e.g. “commercial server-grade DDR4 controller”) into a structured architecture.
 
-1. Create a new issue using the **AI Task Form** (`ai_task.yml`) with:
-   - **Select Issue Type**: `Specification`
-   - **Module name**: `N/A`
-   - **Issue Description**: describe your idea in plain language, for example:
-     - “Implement a commercial server-grade DDR4 controller with ECC, refresh logic, and configurable timing parameters. Target typical server DIMMs and JEDEC DDR4 timing.”
-2. The AI agent reads any existing specs in the repo and generates **`docs/ARCHITECTURE.md`** (or updates it) with:
+1. On GitHub, click **New issue** and choose the **“AI Specification”** template (from `.github/ISSUE_TEMPLATE/1_specification.yml`).
+2. The form only asks for:
+   - **Idea or description (optional)** – you can leave this blank. If you write something, describe your high-level RTL idea in plain language (e.g. commercial server-grade DDR4 controller with ECC and refresh).
+3. Submit the issue. The AI agent uses any existing specs in the repo and generates **`docs/ARCHITECTURE.md`** (or updates it) with:
    - Functional blocks and modules
    - Interfaces and I/O signals
    - Protocols, timing, and constraints
    - Block diagrams or FSM descriptions (ASCII or markdown)
-3. Review `docs/ARCHITECTURE.md` and refine it until it is the **authoritative design reference**.
+4. Review `docs/ARCHITECTURE.md` and refine it until it is the **authoritative design reference**.
 
-Key point: at this stage you only describe *what* you want; no module names are required yet.
+You do not need to fill a “module name” or “issue type” – choosing the Specification template is enough.
 
 ---
 
@@ -34,17 +40,17 @@ Key point: at this stage you only describe *what* you want; no module names are 
 
 Goal: turn the architecture into a concrete implementation roadmap.
 
-1. Create a new issue using the **AI Task Form** with:
-   - **Select Issue Type**: `Planning`
-   - **Module name**: `N/A`
-   - **Issue Description** (optional, 1–2 sentences is enough): e.g.
-     - “Create an implementation plan for the DDR4 controller described in ARCHITECTURE.md. Break it into modules, define dependencies, and specify initial testbench and documentation requirements.”
-2. The AI agent uses `docs/ARCHITECTURE.md` to generate or update **`docs/PLAN.md`**, including:
+1. Click **New issue** and choose the **“AI Planning”** template (from `.github/ISSUE_TEMPLATE/2_planning.yml`).
+2. The form only asks for:
+   - **Hint (optional)** – you can leave this blank. Agents will use `docs/ARCHITECTURE.md` to generate or update **`docs/PLAN.md`**.
+3. Submit the issue. The AI agent produces or updates **`docs/PLAN.md`**, including:
    - A list of **modules/features** (e.g. `ddr4_ctrl_top`, `phy_if`, `cmd_queue`, `refresh_fsm`, etc.).
    - **Task dependencies** between modules.
    - Initial **testbench and documentation requirements**.
    - A proposed order for **incremental implementation**.
-3. `docs/PLAN.md` becomes the **master roadmap** for all subsequent Implementation and Verification issues.
+4. `docs/PLAN.md` becomes the **master roadmap** for all subsequent Implementation and Verification issues.
+
+Again, no module name or extra fields – just use the Planning template.
 
 ---
 
@@ -52,71 +58,37 @@ Goal: turn the architecture into a concrete implementation roadmap.
 
 Goal: for each module in the plan, generate RTL, a testbench, and documentation automatically.
 
-For each module or feature, you only need to provide:
+1. Click **New issue** and choose the **“AI Implementation”** template (from `.github/ISSUE_TEMPLATE/3_implementation.yml`).
+2. The form asks for:
+   - **Module name** (required) – the exact name from `ARCHITECTURE.md` / `docs/PLAN.md`, e.g. `ddr4_ctrl_top`.
+   - **Description (optional)** – you can leave this blank; the workflow always reads `docs/ARCHITECTURE.md` and `docs/PLAN.md` and the agents infer what to generate.
+3. Submit the issue. The pipeline will:
+   - Run the RTL, Testbench, and Documentation agents for that module.
+   - Produce `rtl/<module_name>.v`, `tb/<module_name>_tb.v`, `docs/<module_name>.md`, and JSON in `results/`.
+   - Open pull request(s) for you to review; add the label **`ready-to-merge`** when satisfied.
 
-- **The module name** (must match `ARCHITECTURE.md`)
-- **Optionally, a short description** of what you want (your idea / behavior in plain language)
-
-Everything else (context building, prompts, JSON, PRs) is handled by the automation.  
-If you leave the description very short (or even empty), the agents can still infer behavior from `docs/ARCHITECTURE.md` and `docs/PLAN.md`.
-
-### 3.1 Create an Implementation issue
-
-For each module (for example `ddr4_ctrl_top`):
-
-1. Go to **New issue → AI-Assisted Task**.
-2. Fill in:
-   - **Select Issue Type**: `Implementation`
-   - **Module name**: the exact name from `ARCHITECTURE.md`, e.g. `ddr4_ctrl_top`.
-   - **Issue Description** (optional):
-     - Minimal: “Implement this module according to ARCHITECTURE.md and PLAN.md.”
-     - Rich (optional): describe the intended behavior for this module, for example:
-       - “Implement `ddr4_ctrl_top` as the top-level DDR4 controller. It interfaces to the PHY, schedules commands, enforces timing constraints from TESTPLAN, and exposes a simple request/response interface to the host.”
-
-You do **not** need to specify file paths or JSON; the workflow will handle that. The agents will read `ARCHITECTURE.md`, `docs/PLAN.md`, and any optional spec files to understand what to generate.
+You can repeat this for every module listed in `docs/PLAN.md`. Only the **module name** is required; description is optional.
 
 ### 3.2 What the automation does for an Implementation issue
 
 Once you submit the issue:
 
 1. The **`ai-pipeline.yml` workflow** triggers on `issues: opened`.
-2. It parses:
-   - The **selected Issue Type**:
-     - If it is **Implementation**, it enables all three generation jobs: RTL, Testbench, and Documentation.
-     - For **Specification / Planning / Verification**, it does **not** auto-generate code/docs (those issues are for high-level work).
-   - The **Module name**:
-     - Required for Implementation; used for filenames and inside the prompts.
-3. It builds a **context file** for the AI using:
+2. It parses the issue body:
+   - Because you used the **AI Implementation** template, it detects **Implementation** and enables all three generation jobs: RTL, Testbench, and Documentation.
+   - It reads the **Module name** from the form and uses it for filenames and prompts.
+3. It builds a **context file** from:
    - `docs/ARCHITECTURE.md` (or `ARCHITECTURE.md` in repo root)
-   - `docs/PLAN.md` (Implementation Plan), if present
-   - Optional spec files if they exist:
-     - `INTERFACE_SPEC.md`
-     - `NAMING_CONVENTIONS.md`
-     - `TESTPLAN.md`
-     - (either in repo root or under `docs/`)
-4. It calls the appropriate AI agents (`github/agents@v1`) with:
-   - The constructed context
-   - The relevant prompt templates from `.github/agents/prompt-templates/`
-   - The target module name
-5. The agents generate:
-   - **RTL** in `rtl/<module_name>.v`
-   - **Testbench** in `tb/<module_name>_tb.v`
-   - **Documentation** in `docs/<module_name>.md`
-   - A **JSON summary** (simulation status, coverage, etc.) in `results/`:
-     - `results/rtl_output.json`
-     - `results/tb_output.json`
-     - `results/doc_output.json`
-6. The workflow:
-   - Commits the changes on a new `ai/...` branch (e.g. `ai/rtl-<module>-<run_id>` etc.).
-   - Opens one or more **pull requests** pointing back to your issue, with instructions to label them `ready-to-merge` when you are satisfied.
-
-You can repeat this process for each module listed in `docs/PLAN.md`.
+   - `docs/PLAN.md` (if present)
+   - Optional: `INTERFACE_SPEC.md`, `NAMING_CONVENTIONS.md`, `TESTPLAN.md` (root or `docs/`)
+4. It calls the AI agents with that context and the module name; they generate RTL, TB, and docs and write JSON to `results/`.
+5. The workflow commits on `ai/...` branches and opens PR(s); you label **`ready-to-merge`** to auto-merge.
 
 ---
 
 ## **Step 4: Verification and Auto-Merge**
 
-Verification can be done both manually and via additional AI-assisted issues.
+Verification can be done both manually and via the **“AI Verification”** issue template.
 
 1. For **Implementation PRs**:
    - Review the generated RTL, testbench, docs, and JSON summaries.
@@ -126,11 +98,9 @@ Verification can be done both manually and via additional AI-assisted issues.
 3. The **same `ai-pipeline.yml` workflow** listens for `pull_request: labeled` events:
    - When it sees the label **`ready-to-merge`**, it will automatically merge the PR into the main branch.
 4. If coverage or tests fail, or behavior is not as expected:
-   - Create new issues (type **Verification**) to:
-     - Add more tests.
-     - Tighten constraints.
-     - Refine RTL or documentation.
-   - Repeat Step 3 for incremental improvement.
+   - Open a new issue with the **“AI Verification”** template (`.github/ISSUE_TEMPLATE/4_verification.yml`).
+   - Optionally pick **Module name** and **What do you want to improve?** (add tests, tighten constraints, refine RTL/docs). Description can stay blank.
+   - Use the issue to track adding more tests, tightening constraints, or refining RTL/documentation; repeat Implementation for the same module if needed.
 
 ---
 
@@ -141,9 +111,9 @@ You can iterate on all three phases as the design evolves:
 - Update `docs/ARCHITECTURE.md` if new requirements or blocks are identified.
 - Update `docs/PLAN.md` when you add modules, change priorities, or discover new dependencies.
 - Add new AI issues for:
-  - Missing features (Implementation).
-  - Additional tests or coverage (Verification).
-  - Documentation improvements (either Implementation for a module, or Planning for higher-level docs).
+  - Missing features → **AI Implementation** (with module name).
+  - Additional tests or coverage → **AI Verification**.
+  - Documentation or plan updates → **AI Planning** or **AI Specification**.
 - Ensure all merged PRs maintain:
   - **JSON traceability** in `results/`.
   - **Simulation/coverage verification** where applicable.
@@ -177,8 +147,8 @@ After executing tasks, your repository should include:
 
 ## **Summary Workflow**
 
-1. **Specification**: Generate / refine `docs/ARCHITECTURE.md` via Specification issues.  
-2. **Planning**: Create / update `docs/PLAN.md` via Planning issues.  
-3. **Implementation**: For each module, create an Implementation issue to generate RTL, Testbench, and Documentation.  
-4. **Verification & Merge**: Review outputs, label PRs **`ready-to-merge`** to auto-merge.  
-5. **Refine**: Iterate on specification, planning, implementation, and verification until the project is complete.
+1. **Specification**: New issue → **AI Specification** template (optional description). Generates/refines `docs/ARCHITECTURE.md`.
+2. **Planning**: New issue → **AI Planning** template (optional hint). Generates/updates `docs/PLAN.md`.
+3. **Implementation**: New issue → **AI Implementation** template; fill **Module name**, description optional. Generates RTL, TB, docs and opens PR(s).
+4. **Verification & Merge**: Review PRs, add label **`ready-to-merge`** to auto-merge. For gaps, use **AI Verification** template.
+5. **Refine**: Iterate with any of the four templates until the project is complete.
