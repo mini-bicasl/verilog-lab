@@ -1,25 +1,37 @@
-# AI Testbench Generation Prompt
+# Testbench Generation Template
 
-## Context
-Use the existing:
-- `docs/ARCHITECTURE.md` — module and interface descriptions
-- `docs/PLAN.md` — checklist and status of testbench tasks
+## CONTEXT
+Include relevant files:
+- Architecture: `ARCHITECTURE.md`
+- Interface spec: `INTERFACE_SPEC.md`
+- Testplan: `TESTPLAN.md`
 
-## Instructions for AI Agent
-Generate testbench code for the next unimplemented item in the PLAN.md checklist.
+## TASK
+Generate a Verilog testbench for module `{{module_name}}`.
 
-1. Read `docs/ARCHITECTURE.md` for module ports, behaviors, and expected signals.
-2. Identify next unchecked testbench item in `docs/PLAN.md`.
-3. Create corresponding testbench(s) under `tb/`.
-4. Include directed tests and at least a few randomized tests for robustness.
-5. Simulate and ensure the bench compiles and runs successfully.
+### TESTBENCH REQUIREMENTS
+- Cover all input vectors and corner cases from TESTPLAN.md
+- Include clocks, resets, and stimulus generation
+- Assertions for interface constraints
+- Comment each test step
+- Generate waveform files (`*.vcd`)
 
-## Mandatory JSON Output
+### DELIVERABLES
+- Testbench file (`*_tb.v`) in `/tb/`
+- Optional Markdown description of test strategy
+
+### VALIDATION
+- Testbench must run and pass without errors
+- Compile with Icarus Verilog
+- Generate VCD waveform for debugging
+
+### MANDATORY JSON OUTPUT
+Return a JSON summary after testbench generation:
 ```json
 {
-  "tb_files": ["tb/<module>_tb.v", "..."],
-  "simulation_passed": <true/false>,
-  "coverage_percentage": <number>,
+  "rtl_files": ["rtl/{{module_name}}.v"],
+  "simulation_passed": true,
+  "coverage_percentage": 100,
   "plan_item_completed": true,
-  "version": "<issue_number>_<YYYYMMDD>"
+  "version": "{{issue_number}}_{{YYYYMMDD}}"
 }
