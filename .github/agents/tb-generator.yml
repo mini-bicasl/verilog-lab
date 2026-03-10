@@ -1,28 +1,49 @@
-name: Testbench Generator
-runs-on: ubuntu-latest
+name: Testbench Generation
 
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v3
+on:
+  issue_label:
+    - "tb requested"
 
-  - name: Generate Testbench from PLAN.md
-    uses: actions/github-script@v6
-    with:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      script: |
-        const fs = require('fs');
-        const path = require('path');
+jobs:
+  generate_tb:
+    runs-on: ubuntu-latest
 
-        const arch = fs.readFileSync('docs/ARCHITECTURE.md', 'utf8');
-        const plan = fs.readFileSync('docs/PLAN.md', 'utf8');
+    steps:
+      - uses: actions/checkout@v3
 
-        const template = fs.readFileSync('.github/agents/prompt-templates/tb-template.md', 'utf8');
-        const prompt = template.replace('{{ARCHITECTURE_CONTENT}}', arch).replace('{{PLAN_CONTENT}}', plan);
+      - name: Load context
+        run: |
+          cat ARCHITECTURE.md INTERFACE_SPEC.md TESTPLAN.md > tb_context.md
 
-        const ai_response = await generateTestbench(prompt);
+      - name: Generate Testbench with AI Agent
+        uses: github/agents@v1
+        with:
+          prompt: |
+            <<EOF
+            CONTEXT:
+            {{ tb_context.md }}
 
-        ai_response.files.forEach(f => {
-          const fullPath = path.join(process.cwd(), f.path);
-          fs.mkdirSync(path.dirname(fullPath), { recursive: true });
-          fs.writeFileSync(fullPath, f.content);
-        });
+            TASK:
+            Generate a Verilog testbench for the module requested in the issue.
+
+            CRITERIA:
+            - Cover all input vectors and corner cases listed in TESTPLAN.md.
+            - Include clocks, resets, and stimulus generation.
+            - Include assertions for all interface constraints.
+            - Comment each test step for clarity.
+            - Structure simulation so logs and waveform files can be easily analyzed.
+
+            VALIDATION:
+            - Testbench must run and pass without errors in Icarus Verilog.
+            - Generate VCD waveform file for debugging.
+            EOF
+
+      - name: Run Simulation
+        run: |
+          iverilog -o sim.out rtl/*.v tb/*.v
+          vvp sim.out
+          if [ $? -ne 0 ]; then
+            echo "Simulation failed. Opening issue with logs."
+            gh issue create --title "TB Generation Failure" --body "$(cat sim.log)"
+            exit 1
+          fi
