@@ -1,31 +1,25 @@
 # AI Testbench Generation Prompt
 
-## Issue Description
-{{ISSUE_BODY}}
+## Context
+Use the existing:
+- `docs/ARCHITECTURE.md` — module and interface descriptions
+- `docs/PLAN.md` — checklist and status of testbench tasks
 
 ## Instructions for AI Agent
+Generate testbench code for the next unimplemented item in the PLAN.md checklist.
 
-You are generating testbenches for RTL modules.
-
-1. **File Placement**  
-   - Save all testbench files in `tb/`.  
-   - Use `<module>_tb.v` naming.  
-2. **Test Cases**  
-   - Include at least 5 directed test cases for functional verification.  
-   - Include at least 2 randomized tests if possible.  
-3. **Simulation**  
-   - Ensure testbench compiles and runs without errors.  
-   - Include minimal simulation logs.  
-4. **Comments**  
-   - Document each test case and expected behavior.  
-   - Reference the corresponding RTL module and design document.  
+1. Read `docs/ARCHITECTURE.md` for module ports, behaviors, and expected signals.
+2. Identify next unchecked testbench item in `docs/PLAN.md`.
+3. Create corresponding testbench(s) under `tb/`.
+4. Include directed tests and at least a few randomized tests for robustness.
+5. Simulate and ensure the bench compiles and runs successfully.
 
 ## Mandatory JSON Output
 ```json
 {
   "tb_files": ["tb/<module>_tb.v", "..."],
-  "simulation_passed": true,
-  "coverage_percentage": 90,
-  "notes": "List of test cases included",
+  "simulation_passed": <true/false>,
+  "coverage_percentage": <number>,
+  "plan_item_completed": true,
   "version": "<issue_number>_<YYYYMMDD>"
 }
