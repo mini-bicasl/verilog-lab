@@ -5,20 +5,27 @@
 
 ## Instructions for AI Agent
 
-1. **Purpose:** Generate a synthesizable and simulation-ready testbench for the RTL module described in the issue.  
-2. **Files:** Save all testbench files under `tb/` folder, using consistent naming based on module name.  
-3. **Test Cases:**  
-   - Include at least 5 directed tests covering normal and edge cases.  
-   - Add at least 2 randomized test cases if possible.  
-4. **Simulation:** Ensure the testbench compiles and simulates without errors (e.g., using `iverilog` or equivalent).  
-5. **Comments:** Include inline comments explaining the test scenario, expected results, and signal relationships.  
-6. **Documentation:** Each testbench should include a brief module header comment with:  
-   - Module purpose  
-   - Inputs and outputs tested  
-   - References to specification sections  
-7. **Output JSON:** Provide a JSON summary with the following keys:  
-   ```json
-   {
-     "tb_files": ["tb/<filename>.v", "..."],
-     "simulation_passed": true/false
-   }
+You are generating testbenches for RTL modules.
+
+1. **File Placement**  
+   - Save all testbench files in `tb/`.  
+   - Use `<module>_tb.v` naming.  
+2. **Test Cases**  
+   - Include at least 5 directed test cases for functional verification.  
+   - Include at least 2 randomized tests if possible.  
+3. **Simulation**  
+   - Ensure testbench compiles and runs without errors.  
+   - Include minimal simulation logs.  
+4. **Comments**  
+   - Document each test case and expected behavior.  
+   - Reference the corresponding RTL module and design document.  
+
+## Mandatory JSON Output
+```json
+{
+  "tb_files": ["tb/<module>_tb.v", "..."],
+  "simulation_passed": true,
+  "coverage_percentage": 90,
+  "notes": "List of test cases included",
+  "version": "<issue_number>_<YYYYMMDD>"
+}
