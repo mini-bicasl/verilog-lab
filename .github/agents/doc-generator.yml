@@ -5,42 +5,24 @@ steps:
   - name: Checkout repository
     uses: actions/checkout@v3
 
-  - name: Run Documentation AI Agent
+  - name: Generate Documentation from PLAN.md
     uses: actions/github-script@v6
     with:
       github-token: ${{ secrets.GITHUB_TOKEN }}
       script: |
-        const issue = context.payload.issue;
-        if (!issue) return;
-
         const fs = require('fs');
         const path = require('path');
 
-        // Load documentation prompt template
-        const templatePath = '.github/agents/prompt-templates/doc-template.md';
-        const template = fs.readFileSync(templatePath, 'utf8');
+        const arch = fs.readFileSync('docs/ARCHITECTURE.md', 'utf8');
+        const plan = fs.readFileSync('docs/PLAN.md', 'utf8');
 
-        // Construct AI prompt
-        const prompt = template.replace('{{ISSUE_BODY}}', issue.body);
+        const template = fs.readFileSync('.github/agents/prompt-templates/doc-template.md', 'utf8');
+        const prompt = template.replace('{{ARCHITECTURE_CONTENT}}', arch).replace('{{PLAN_CONTENT}}', plan);
 
-        // Call AI service (pseudo-code)
-        const ai_response = await generateDocumentation(prompt); 
-        // Expected ai_response.files = [{path, content}, ...]
+        const ai_response = await generateDocumentation(prompt);
 
-        // Save doc files to repo
         ai_response.files.forEach(f => {
           const fullPath = path.join(process.cwd(), f.path);
           fs.mkdirSync(path.dirname(fullPath), { recursive: true });
           fs.writeFileSync(fullPath, f.content);
-        });
-
-        // Create draft PR with documentation outputs
-        await github.pulls.create({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          head: `ai-doc/${issue.number}`,
-          base: 'main',
-          title: `[AI] Documentation Generation: ${issue.title}`,
-          body: `Generated documentation from issue #${issue.number}`,
-          draft: true
         });
