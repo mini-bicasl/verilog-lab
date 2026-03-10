@@ -15,7 +15,7 @@ jobs:
         run: |
           cat ARCHITECTURE.md INTERFACE_SPEC.md TESTPLAN.md > tb_context.md
 
-      - name: Generate Testbench with AI Agent
+      - name: Run AI agent to generate testbench
         uses: github/agents@v1
         with:
           prompt: |
@@ -24,26 +24,30 @@ jobs:
             {{ tb_context.md }}
 
             TASK:
-            Generate a Verilog testbench for the module requested in the issue.
-
-            CRITERIA:
-            - Cover all input vectors and corner cases listed in TESTPLAN.md.
-            - Include clocks, resets, and stimulus generation.
-            - Include assertions for all interface constraints.
-            - Comment each test step for clarity.
-            - Structure simulation so logs and waveform files can be easily analyzed.
-
-            VALIDATION:
-            - Testbench must run and pass without errors in Icarus Verilog.
-            - Generate VCD waveform file for debugging.
+            Generate testbench for module {{module_name}}.
+            Follow TB template instructions, include MANDATORY JSON OUTPUT.
             EOF
 
-      - name: Run Simulation
+      - name: Parse AI JSON output
+        id: parse_json
+        run: |
+          echo "$AGENT_OUTPUT" | jq '.' > agent_tb_output.json
+          simulation_passed=$(jq '.simulation_passed' agent_tb_output.json)
+          if [ "$simulation_passed" != "true" ]; then
+            echo "Simulation failed according to agent JSON."
+            gh issue create \
+              --title "Testbench Simulation Failed: {{module_name}}" \
+              --body "Agent-generated testbench failed simulation. JSON output:\n$(cat agent_tb_output.json)"
+            exit 1
+          fi
+
+      - name: Run simulation
         run: |
           iverilog -o sim.out rtl/*.v tb/*.v
           vvp sim.out
           if [ $? -ne 0 ]; then
-            echo "Simulation failed. Opening issue with logs."
-            gh issue create --title "TB Generation Failure" --body "$(cat sim.log)"
+            echo "Simulation execution failed. Opening issue."
+            gh issue create \
+              --title "Simulation Execution Failed: {{module_name}}" \
+              --body "Simulation failed during runtime. See agent output and logs."
             exit 1
-          fi
