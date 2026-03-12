@@ -75,7 +75,7 @@ The controller is designed as a synthesizable RTL subsystem that bridges a host-
 ### System Signals
 
 - `clk`: Controller clock
-- `rst_n`: Active-low synchronous reset (or implementation-defined reset strategy)
+- `rst_n`: Active-low synchronous reset
 
 ### Host Interface (logical)
 
@@ -97,7 +97,7 @@ The controller is designed as a synthesizable RTL subsystem that bridges a host-
 Typical server configuration:
 
 - `DATA_W = 64` (host data)
-- Internal DRAM data path `DQ_W = 72` (64 data + 8 ECC)
+- Internal DRAM data path `DQ_W = 72` (64 data + 8 SECDED check bits)
 
 ### CSR / Configuration Interface
 
@@ -137,7 +137,7 @@ Typical server configuration:
    - Double-bit errors are flagged and optionally interrupting; corrected-single-bit counters are accumulated
 
 5. **Initialization / bring-up**
-   - No host traffic accepted until `init_fsm` completes JEDEC initialization and PHY calibration reports done
+   - No host traffic accepted until `init_fsm` completes JEDEC initialization and PHY calibration reports completion
 
 6. **Ordering and QoS**
    - Supports strict in-order completion mode and ID-tagged completion mode
