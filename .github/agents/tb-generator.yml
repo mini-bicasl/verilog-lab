@@ -7,7 +7,7 @@ name: Testbench Generation
 trigger:
   on: issues
   types: [labeled]
-  label: "tb requested"
+  label: "tb"
 
 context:
   required:

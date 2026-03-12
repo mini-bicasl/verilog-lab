@@ -7,7 +7,7 @@ name: RTL Generation
 trigger:
   on: issues
   types: [labeled]
-  label: "rtl requested"
+  label: "rtl"
 
 context:
   required:

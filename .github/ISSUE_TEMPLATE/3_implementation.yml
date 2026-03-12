@@ -1,4 +1,4 @@
-name: Implementation
+name: Step 3 - Implementation
 description: Agent reads docs/PLAN.md and implements the immediate phase (RTL, testbench, docs)
 title: "[Implementation] – "
 labels: ['AI-task', 'rtl', 'tb', 'doc']
@@ -9,7 +9,7 @@ body:
     id: issue_type
     attributes:
       label: "Select Issue Type"
-      description: "This form creates an Implementation issue. The workflow runs RTL, Testbench, and Documentation agents. The agent must read docs/PLAN.md and execute the immediate phase (next unchecked items in the Incremental Implementation Order). The issue title will be updated automatically to include the resolved module name when the workflow runs."
+      description: "This form creates an Implementation issue. Copilot will read docs/PLAN.md and execute the immediate phase (which may include multiple modules). First, Copilot should set this issue's title to \"[Implementation] – <phase_name>\" where <phase_name> is the first immediate phase in docs/PLAN.md."
       options:
         - Implementation
       default: 0
@@ -19,8 +19,16 @@ body:
   - type: textarea
     id: issue_description
     attributes:
-      label: "Instructions for the agent"
-      description: "The agent MUST read docs/PLAN.md and implement the immediate phase (next unchecked module(s) in the Incremental Implementation Order). Leave blank for default behavior, or add hints (e.g. skip to step 5, focus on RTL only)."
-      value: "Implement the immediate phase per docs/PLAN.md. Use docs/ARCHITECTURE.md for interfaces and behavior."
+      label: "Instructions for the agent (prompt)"
+      description: "This text is the main prompt for Copilot. Edit to add hints (e.g. focus on RTL only, skip to a specific PLAN step)."
+      value: |
+        1. Read docs/PLAN.md and identify the first immediate phase to implement (a phase can be a list of modules).
+           - Use the first phase that still has unchecked items (or the first phase in the plan if none are checked/unchecked).
+        2. Update this issue's title to "[Implementation] – <phase_name>" using the resolved phase name.
+        3. Study .github/agents/ (and its prompt templates) to understand the requirements and expected outputs for RTL, testbench, and documentation.
+        4. Execute the tasks for the resolved phase (all modules in that phase):
+           - Implement synthesizable RTL for each module
+           - Implement a Verilog testbench for each module
+           - Write Markdown documentation for each module
     validations:
       required: true

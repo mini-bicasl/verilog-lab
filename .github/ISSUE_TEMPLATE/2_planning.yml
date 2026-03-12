@@ -1,4 +1,4 @@
-name: Planning
+name: Step 2 - Planning
 description: Generate or update the implementation plan (docs/PLAN.md) from ARCHITECTURE.md
 title: "[Planning] – "
 labels: ['AI-task']

@@ -7,7 +7,7 @@ name: Documentation Generation
 trigger:
   on: issues
   types: [labeled]
-  label: "doc requested"
+  label: "doc"
 
 context:
   required:
