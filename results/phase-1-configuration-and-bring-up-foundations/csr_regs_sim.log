@@ -1,0 +1,38 @@
+VCD info: dumpfile results/phase-1-configuration-and-bring-up-foundations/csr_regs.vcd opened for output.
+
+[TEST 1] Reset default TIMING0
+  PASS: TIMING0 reset = 0x0f0f2332
+
+[TEST 2] Write/read TIMING0
+  PASS: MING0 write-back = 0x1011283c
+
+[TEST 3] Output port values after TIMING0 write
+  PASS: t_rcd = 0x00000010
+  PASS: t_rp = 0x00000011
+  PASS: t_ras = 0x00000028
+  PASS: t_rc = 0x0000003c
+
+[TEST 4] Write/read TIMING4
+  PASS: MING4 write-back = 0x01040492
+
+[TEST 5] ECC control register
+  PASS: ecc_enable = 0x00000001
+  PASS: ecc_inject_sbe = 0x00000001
+  PASS: ecc_inject_dbe=0 = 0x00000000
+
+[TEST 6] Counter read-back
+  PASS: sbe_count = 0x00000005
+  PASS: dbe_count = 0x00000002
+
+[TEST 7] Policy register write/read
+  PASS: sched_policy=3 = 0x00000003
+  PASS: page_policy=1 = 0x00000001
+
+[TEST 8] Unknown address returns 0xDEADBEEF
+  PASS: unknown addr = 0xdeadbeef
+
+============================
+PASS: 15   FAIL: 0
+============================
+ALL TESTS PASSED
+tb/csr_regs_tb.v:259: $finish called at 380000 (1ps)

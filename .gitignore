@@ -1,0 +1,6 @@
+# Build artifacts (compiled simulation binaries)
+build/*.out
+build/*.vvp
+
+# VCD waveform files (too large for git)
+results/**/*.vcd
