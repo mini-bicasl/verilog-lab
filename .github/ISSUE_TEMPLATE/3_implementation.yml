@@ -1,4 +1,4 @@
-name: AI Implementation
+name: Implementation
 description: Agent reads docs/PLAN.md and implements the immediate phase (RTL, testbench, docs)
 title: "[Implementation] – "
 labels: ['AI-task', 'rtl', 'tb', 'doc']
