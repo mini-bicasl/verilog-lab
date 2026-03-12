@@ -20,7 +20,7 @@ body:
     id: issue_description
     attributes:
       label: "Idea or description (optional)"
-      description: "Leave blank if you prefer. Agents will use ARCHITECTURE.md and any existing specs. If you write something, describe your high-level RTL idea in plain language (e.g. commercial server-grade DDR4 controller with ECC and refresh)."
-      value: "e.g. Implement a commercial server-grade DDR4 controller with ECC, refresh logic, and configurable timing. Target JEDEC DDR4."
+      description: "Agents will use ARCHITECTURE.md and any existing specs. If you write something, describe your high-level RTL idea in plain language (e.g. commercial server-grade DDR4 controller with ECC and refresh)."
+      value: "Provide a detailed documentation in docs/ARCHITECTURE.md for a commercial server-grade DDR4 controller with ECC, refresh logic, and configurable timing. Target JEDEC DDR4."
     validations:
       required: true

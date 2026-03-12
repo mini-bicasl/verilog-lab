@@ -21,6 +21,6 @@ body:
     attributes:
       label: "Hint (optional)"
       description: "Leave blank if you prefer. Agents will use ARCHITECTURE.md to devise docs/PLAN.md (modules, dependencies, testbench/docs requirements, implementation order)."
-      value: "e.g. Create an implementation plan for the design in ARCHITECTURE.md with modules, dependencies, and implementation order."
+      value: "Create an implementation plan in docs/PLAN.md for the design in docs/ARCHITECTURE.md with modules, dependencies, and implementation order."
     validations:
       required: true

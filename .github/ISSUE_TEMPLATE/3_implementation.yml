@@ -21,6 +21,6 @@ body:
     attributes:
       label: "Instructions for the agent"
       description: "The agent MUST read docs/PLAN.md and implement the immediate phase (next unchecked module(s) in the Incremental Implementation Order). Leave blank for default behavior, or add hints (e.g. skip to step 5, focus on RTL only)."
-      value: "Optional: e.g. Implement the immediate phase per PLAN.md. Use ARCHITECTURE.md for interfaces and behavior."
+      value: "Implement the immediate phase per docs/PLAN.md. Use docs/ARCHITECTURE.md for interfaces and behavior."
     validations:
       required: true
