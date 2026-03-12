@@ -55,13 +55,23 @@ jobs:
         id: vars
         run: |
           BODY=$(echo '${{ github.event.issue.body }}' | sed 's/\\r//g')
+          TITLE='${{ github.event.issue.title }}'
+          # Detect Implementation: by title (from template "[Implementation] – ") or by body dropdown
+          IS_IMPL=false
+          if echo "$TITLE" | grep -q '\[Implementation\]'; then
+            IS_IMPL=true
+          fi
+          if echo "$BODY" | grep -qE '\*\*Select Issue Type\*\*[[:space:]]*:[[:space:]]*Implementation'; then
+            IS_IMPL=true
+          fi
+
           # Optional override: if user wrote "module name: xxx" or "Module: xxx" in description, use it
           MODULE_FROM_BODY=$(echo "$BODY" | grep -iE '(module name|module):\s*[A-Za-z0-9_]+' | head -1 | sed -n 's/.*:\s*\([A-Za-z0-9_]*\).*/\1/p' | xargs)
           FROM_PLAN="${{ steps.plan.outputs.module_name }}"
           MODULE="${MODULE_FROM_BODY:-$FROM_PLAN}"
 
-          # Decide which phase this issue represents.
-          if echo "$BODY" | grep -q '\*\*Select Issue Type\*\*:\s*Implementation'; then
+          # Set which jobs to run
+          if [ "$IS_IMPL" = true ]; then
             echo "run_rtl=true" >> $GITHUB_OUTPUT
             echo "run_tb=true" >> $GITHUB_OUTPUT
             echo "run_doc=true" >> $GITHUB_OUTPUT
@@ -74,7 +84,7 @@ jobs:
           echo "module_name=${MODULE:-}" >> $GITHUB_OUTPUT
 
           # For Implementation: require module from PLAN (or optional override in description).
-          if echo "$BODY" | grep -q '\*\*Select Issue Type\*\*:\s*Implementation'; then
+          if [ "$IS_IMPL" = true ]; then
             if [ -z "$MODULE" ] || [ "$MODULE" = "N/A" ]; then
               echo "::error::No immediate module found. Ensure docs/PLAN.md exists and has an unchecked item in the Incremental Implementation Order, or specify 'Module: <name>' in the issue description."
               exit 1
