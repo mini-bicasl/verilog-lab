@@ -1,0 +1,10 @@
+{
+  "module": "init_fsm",
+  "rtl_done": true,
+  "tb_done": true,
+  "doc_done": true,
+  "simulation_passed": false,
+  "coverage_completed": false,
+  "coverage_percentage": 0,
+  "plan_item_completed": true
+}
