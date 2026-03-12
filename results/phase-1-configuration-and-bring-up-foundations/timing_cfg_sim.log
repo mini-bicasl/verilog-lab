@@ -1,0 +1,42 @@
+VCD info: dumpfile results/phase-1-configuration-and-bring-up-foundations/timing_cfg.vcd opened for output.
+
+[TEST 1] Reset defaults
+  PASS: alid after reset = 0
+  PASS: cd reset default = 0x0f
+  PASS: rp reset default = 0x0f
+  PASS: fc reset default = 0x0104
+  PASS: fi reset default = 0x0492
+
+[TEST 2] Capture new timing
+  PASS: id after capture = 1
+  PASS: cd after capture = 0x14
+  PASS: rp after capture = 0x12
+  PASS: as after capture = 0x28
+  PASS: rc after capture = 0x37
+  PASS: _l after capture = 0x07
+  PASS: _s after capture = 0x05
+  PASS: _l after capture = 0x07
+  PASS: _s after capture = 0x05
+  PASS: aw after capture = 0x14
+  PASS: _l after capture = 0x0c
+  PASS: _s after capture = 0x06
+  PASS: wr after capture = 0x12
+  PASS: tp after capture = 0x09
+  PASS: fc after capture = 0x012c
+  PASS: fi after capture = 0x04b0
+  PASS: od after capture = 0x1c
+  PASS: rd after capture = 0x0a
+
+[TEST 3] Hold without capture
+  PASS: tc_rcd held = 0x14
+  PASS: tc_refi held = 0x04b0
+
+[TEST 4] Second capture
+  PASS: d second capture = 0x63
+  PASS: i second capture = 0x270f
+
+============================
+PASS: 27   FAIL: 0
+============================
+ALL TESTS PASSED
+tb/timing_cfg_tb.v:216: $finish called at 116000 (1ps)

@@ -1,0 +1,35 @@
+VCD info: dumpfile results/phase-1-configuration-and-bring-up-foundations/phy_adapter.vcd opened for output.
+
+[TEST 1] adapter_rdy=0 while PHY not ready
+  PASS: y=0 (PHY not up) = 0
+
+[TEST 2] adapter_rdy=1 when PHY up
+  PASS: adapter_rdy=1 = 1
+
+[TEST 3] adapter_rdy=0 on phy_error
+  PASS: r_rdy=0 on error = 0
+  PASS: fter error clear = 1
+
+[TEST 4] Command forwarding (ACT)
+  PASS: phy_cmd=ACT = 0x1
+  PASS: phy_cmd_valid=1 = 1
+
+[TEST 5] Command forwarding (RD)
+  PASS: phy_cmd=RD = 0x2
+
+[TEST 6] Write data forwarding
+  PASS: phy_wdata = 0xabcdef0123456789aa
+  PASS: hy_wdata_valid=1 = 1
+
+[TEST 7] Read data forwarding
+  PASS: up_rdata_valid=1 = 1
+  PASS: up_rdata = 0xdeadbeefcafebabe12
+
+[TEST 8] Command backpressure
+  PASS: ing backpressure = 0
+
+============================
+PASS: 12   FAIL: 0
+============================
+ALL TESTS PASSED
+tb/phy_adapter_tb.v:305: $finish called at 228000 (1ps)

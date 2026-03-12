@@ -1,0 +1,31 @@
+VCD info: dumpfile results/phase-1-configuration-and-bring-up-foundations/init_fsm.vcd opened for output.
+
+[TEST 1] No traffic during init
+  PASS: en=0 after reset = 0
+  PASS: ne=0 after reset = 0
+
+[TEST 2] Collect MRS / ZQCL sequence (waiting for tXPR first)
+  PASS: cmd#1 = MRS = 1
+  PASS: cmd#2 = MRS = 1
+  PASS: cmd#3 = MRS = 1
+  PASS: cmd#4 = MRS = 1
+  PASS: cmd#5 = MRS = 1
+  PASS: cmd#6 = MRS = 1
+  PASS: cmd#7 = MRS = 1
+  PASS: cmd#8 = ZQCL = 10
+  PASS: QCL A10=1 (long) = 1
+  Total MRS count = 7 (expected 7)
+  PASS: MRS count
+
+[TEST 3] Wait after ZQCL – no traffic until cal_done
+  PASS:  before cal_done = 0
+
+[TEST 4] Assert phy_cal_done
+  PASS: 1 after cal_done = 1
+  PASS: 1 after cal_done = 1
+
+============================
+PASS: 15   FAIL: 0
+============================
+ALL TESTS PASSED
+tb/init_fsm_tb.v:259: $finish called at 205132000 (1ps)
