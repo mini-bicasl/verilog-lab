@@ -6,10 +6,10 @@ This plan turns `docs/ARCHITECTURE.md` into an incremental implementation roadma
 
 ### Phase 1: Configuration and bring-up foundations
 
-- [ ] `csr_regs`: CSR map for timing values, scheduler policy, refresh mode, ECC controls, and counters
-- [ ] `timing_cfg`: latched timing profile export to datapath/control blocks
-- [ ] `init_fsm`: JEDEC DDR4 initialization and mode-register programming gate
-- [ ] `phy_adapter`: PHY command/data handshake shell (`phy_cmd_*`, `phy_wdata_*`, `phy_rdata_*`, PHY status)
+- [x] `csr_regs`: CSR map for timing values, scheduler policy, refresh mode, ECC controls, and counters
+- [x] `timing_cfg`: latched timing profile export to datapath/control blocks
+- [x] `init_fsm`: JEDEC DDR4 initialization and mode-register programming gate
+- [x] `phy_adapter`: PHY command/data handshake shell (`phy_cmd_*`, `phy_wdata_*`, `phy_rdata_*`, PHY status)
 
 ### Phase 2: Command buffering, legality, and per-bank state
 
@@ -45,7 +45,7 @@ This plan turns `docs/ARCHITECTURE.md` into an incremental implementation roadma
 
 ### Unit-level testbenches
 
-- [ ] `csr_regs_tb`: read/write map checks, reset defaults, mode bit effects
+- [x] `csr_regs_tb`: read/write map checks, reset defaults, mode bit effects
 - [ ] `timing_checker_tb`: directed legality checks for core timing constraints and violation prevention
 - [ ] `bank_machine_tb`: row-open/close transitions and command readiness blocking
 - [ ] `refresh_fsm_tb`: deadline/defer/pull-in behavior and blackout window assertions
@@ -60,9 +60,9 @@ This plan turns `docs/ARCHITECTURE.md` into an incremental implementation roadma
 
 ## Documentation
 
-- [ ] `docs/csr_regs.md`: register map, reset values, programming model
-- [ ] `docs/timing_cfg.md`: timing parameter semantics and update rules
-- [ ] `docs/init_fsm.md`: initialization state sequence and completion criteria
+- [x] `docs/csr_regs.md`: register map, reset values, programming model
+- [x] `docs/timing_cfg.md`: timing parameter semantics and update rules
+- [x] `docs/init_fsm.md`: initialization state sequence and completion criteria
 - [ ] `docs/host_if.md`: host-side protocol timing and response semantics
 - [ ] `docs/cmd_queue.md`: queue formats, ordering guarantees, and backpressure behavior
 - [ ] `docs/bank_machine.md`: tracked state per bank and readiness rules
@@ -71,7 +71,7 @@ This plan turns `docs/ARCHITECTURE.md` into an incremental implementation roadma
 - [ ] `docs/refresh_fsm.md`: refresh policy, deadlines, and scheduler coupling
 - [ ] `docs/ecc_encode.md` + `docs/ecc_decode.md`: SECDED algorithm details and error reporting
 - [ ] `docs/data_path.md`: data formatting, buffering, and ID ordering behavior
-- [ ] `docs/phy_adapter.md`: PHY abstraction and handshake expectations
+- [x] `docs/phy_adapter.md`: PHY abstraction and handshake expectations
 - [ ] `docs/ddr4_ctrl_top.md`: integration-level interfaces, reset/bring-up behavior
 
 ## Verification / Coverage
