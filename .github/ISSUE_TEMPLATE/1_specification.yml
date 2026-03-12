@@ -1,6 +1,6 @@
 name: AI Specification
 description: Capture high-level idea and generate/update ARCHITECTURE.md
-title: "[AI] Specification – "
+title: "[Specification] – "
 labels: ['AI-task']
 assignees: ['github-copilot']
 
@@ -21,6 +21,6 @@ body:
     attributes:
       label: "Idea or description (optional)"
       description: "Leave blank if you prefer. Agents will use ARCHITECTURE.md and any existing specs. If you write something, describe your high-level RTL idea in plain language (e.g. commercial server-grade DDR4 controller with ECC and refresh)."
-      placeholder: "e.g. Implement a commercial server-grade DDR4 controller with ECC, refresh logic, and configurable timing. Target JEDEC DDR4."
+      value: "e.g. Implement a commercial server-grade DDR4 controller with ECC, refresh logic, and configurable timing. Target JEDEC DDR4."
     validations:
       required: false

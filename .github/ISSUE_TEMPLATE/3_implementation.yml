@@ -1,6 +1,6 @@
 name: AI Implementation
 description: Generate RTL, testbench, and documentation for one module (uses ARCHITECTURE.md and PLAN.md)
-title: "[AI] Implementation – "
+title: "[Implementation] – "
 labels: ['AI-task', 'rtl', 'tb', 'doc']
 assignees: ['github-copilot']
 
