@@ -32,7 +32,9 @@ Internally, the **Implementation** phase fans out to three specialized agents:
      - Reserved for coverage / test improvements. It does not auto-run these agents by default.
 4. **Agents run:**
    - Each agent uses a prompt template from `prompt-templates/` plus the context file.
-   - They generate files under `rtl/`, `tb/`, `docs/`, and JSON summaries under `results/`.
+   - They generate files under `rtl/`, `tb/`, `docs/`, and run-scoped artifacts under:
+     - `results/phase-<phase_name>/`
+     (logs, dumps, and `*_result.json`).
 5. **Outputs and PRs:**
    - The workflow commits generated files on `ai/...` branches and opens PRs.
    - When the user adds the label **`ready-to-merge`** to a PR, the same workflow auto-merges it.
@@ -46,9 +48,9 @@ See **`docs/INSTRUCTION.md`** for the full user-facing flow.
 | **rtl-generator.yml** | Agent spec for RTL generation (context, deliverables, JSON schema). |
 | **tb-generator.yml** | Agent spec for testbench generation. |
 | **doc-generator.yml** | Agent spec for documentation generation. |
-| **prompt-templates/rtl-template.md** | Prompt template for the RTL agent (expects JSON with `rtl_files`, `simulation_passed`, `coverage_percentage`, `plan_item_completed`, `version`). |
-| **prompt-templates/tb-template.md** | Prompt template for the testbench agent (expects JSON with `tb_files`, `simulation_passed`, `coverage_percentage`, `plan_item_completed`, `version`). |
-| **prompt-templates/doc-template.md** | Prompt template for the documentation agent (expects JSON with `doc_files`, `plan_item_completed`, `version`). |
+| **prompt-templates/rtl-template.md** | Prompt template for the RTL agent (updates `results/phase-<phase_name>/<module>_result.json`; `simulation_passed` must reflect an actual `vvp` run). |
+| **prompt-templates/tb-template.md** | Prompt template for the testbench agent (writes `results/phase-<phase_name>/<module>_sim.log` and updates `results/phase-<phase_name>/<module>_result.json`). |
+| **prompt-templates/doc-template.md** | Prompt template for the documentation agent (updates `results/phase-<phase_name>/<module>_result.json`; completion is gated on passing sim). |
 | **prompt-templates/PLAN.md** | Reference for Implementation Plan structure (actual plan lives in `docs/PLAN.md`). |
 | **prompt-templates/ARCHITECTURE.md** | Reference for architecture structure (actual doc lives in `docs/ARCHITECTURE.md`). |
 
@@ -62,4 +64,4 @@ See **`docs/INSTRUCTION.md`** for the full user-facing flow.
   (either in the repo root or under `docs/`).
 
 The workflow builds a single context file per run and passes it to the agents.  
-Each prompt template describes the expected JSON output shape for traceability in **`results/`**.
+Each prompt template describes the expected JSON output shape for traceability in **`results/phase-<phase_name>/`**.

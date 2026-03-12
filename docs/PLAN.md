@@ -6,10 +6,10 @@ This plan turns `docs/ARCHITECTURE.md` into an incremental implementation roadma
 
 ### Phase 1: Configuration and bring-up foundations
 
-- [x] `csr_regs`: CSR map for timing values, scheduler policy, refresh mode, ECC controls, and counters
-- [x] `timing_cfg`: latched timing profile export to datapath/control blocks
-- [x] `init_fsm`: JEDEC DDR4 initialization and mode-register programming gate
-- [x] `phy_adapter`: PHY command/data handshake shell (`phy_cmd_*`, `phy_wdata_*`, `phy_rdata_*`, PHY status)
+- [ ] `csr_regs`: CSR map for timing values, scheduler policy, refresh mode, ECC controls, and counters
+- [ ] `timing_cfg`: latched timing profile export to datapath/control blocks
+- [ ] `init_fsm`: JEDEC DDR4 initialization and mode-register programming gate
+- [ ] `phy_adapter`: PHY command/data handshake shell (`phy_cmd_*`, `phy_wdata_*`, `phy_rdata_*`, PHY status)
 
 ### Phase 2: Command buffering, legality, and per-bank state
 

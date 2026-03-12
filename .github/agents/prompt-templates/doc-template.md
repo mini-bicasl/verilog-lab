@@ -15,6 +15,8 @@ Use the context file and any referenced RTL/testbench paths.
 
 Write Markdown documentation for module: **`{{module_name}}`**.
 
+Use the resolved phase name from `docs/PLAN.md` and write all artifacts to **`results/phase-{{phase_name}}/`**.
+
 ### DOCUMENTATION REQUIREMENTS
 
 - Short overview and role of the module in the architecture
@@ -29,18 +31,25 @@ Write Markdown documentation for module: **`{{module_name}}`**.
 
 1. Documentation file: **`docs/{{module_name}}.md`**
 2. Use headings, tables, and diagrams so it renders well on GitHub
+3. Update (or create) status file: **`<results_dir>/{{module_name}}_result.json`** (`doc_done` flag + completion gating)
 
 ### MANDATORY JSON OUTPUT
 
-At the **end** of your response, output exactly one JSON block:
+At the **end** of your response, output exactly one JSON block and ensure the same data is reflected in `<results_dir>/{{module_name}}_result.json`.
 
 ```json
 {
-  "doc_files": ["docs/{{module_name}}.md"],
-  "plan_item_completed": true,
-  "version": "issue_number_YYYYMMDD"
+  "module": "{{module_name}}",
+  "rtl_done": false,
+  "tb_done": false,
+  "doc_done": true,
+  "simulation_passed": false,
+  "coverage_completed": false,
+  "coverage_percentage": 0,
+  "plan_item_completed": false,
+  "error_summary": ""
 }
 ```
 
-- `plan_item_completed`: `true` when the documentation satisfies the Implementation Plan item for this module
-- `version`: e.g. `"42_20250311"`
+- `plan_item_completed`: MUST be `true` only when **RTL + TB + docs exist** and **simulation_passed is true**.
+- `error_summary`: empty if all checks pass; otherwise a concise description of what is still missing (e.g., "simulation not passing yet").

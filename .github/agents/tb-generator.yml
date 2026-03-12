@@ -12,35 +12,41 @@ trigger:
 context:
   required:
     - docs/ARCHITECTURE.md
-    - docs/ARCHITECTURE.md
   optional:
     - docs/PLAN.md
-    - docs/INTERFACE_SPEC.md
-    - docs/TESTPLAN.md
     - docs/INTERFACE_SPEC.md
     - docs/TESTPLAN.md
 
 inputs:
   module_name: "Parsed from issue body: 'Module name: <name>'"
+  phase_name: "Resolved phase name from docs/PLAN.md (used for results/phase-<phase_name>/ scoping)"
 
 deliverables:
   - path: "tb/{{ module_name }}_tb.v"
     description: "Verilog testbench"
-  - path: "results/tb_output.json"
-    description: "JSON summary"
-  - path: "results/sim.log"
+  - path: "results/phase-{{ phase_name }}/{{ module_name }}_result.json"
+    description: "Per-module status JSON (must reflect real compile/sim status)"
+  - path: "results/phase-{{ phase_name }}/{{ module_name }}_sim.log"
     description: "Simulation log (from iverilog/vvp)"
+  - path: "results/phase-{{ phase_name }}/{{ module_name }}.vcd"
+    description: "Waveform dump (if enabled by TB)"
+  - path: "results/phase-{{ phase_name }}/{{ module_name }}.csv"
+    description: "Optional CSV dump (if TB produces one)"
 
 prompt_template: ".github/agents/prompt-templates/tb-template.md"
 
 validation:
   - "Testbench compiles with Icarus Verilog"
   - "Simulation runs (iverilog + vvp)"
-  - "JSON output includes simulation_passed"
+  - "results/phase-{{ phase_name }}/{{ module_name }}_result.json is updated with tb_done=true and accurate status fields"
 
 output_json_schema:
-  tb_files: ["tb/{{ module_name }}_tb.v"]
-  simulation_passed: true
+  module: "{{ module_name }}"
+  rtl_done: boolean
+  tb_done: true
+  doc_done: boolean
+  simulation_passed: boolean
+  coverage_completed: boolean
   coverage_percentage: number
-  plan_item_completed: true
-  version: "issue_number_YYYYMMDD"
+  plan_item_completed: boolean
+  error_summary: string

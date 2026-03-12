@@ -15,6 +15,8 @@ Use the context file given in the prompt.
 
 Generate a Verilog testbench for module: **`{{module_name}}`**.
 
+Use the resolved phase name from `docs/PLAN.md` and write all artifacts to **`results/phase-{{phase_name}}/`**.
+
 ### TESTBENCH REQUIREMENTS
 
 - Cover inputs and corner cases; use `TESTPLAN.md` test vectors if in context
@@ -26,28 +28,35 @@ Generate a Verilog testbench for module: **`{{module_name}}`**.
 ### DELIVERABLES
 
 1. Testbench file: **`tb/{{module_name}}_tb.v`**
-2. Optional: short description of test strategy in comments or a small Markdown note
+2. Simulation log: **`<results_dir>/{{module_name}}_sim.log`**
+3. Waveform dump (VCD): **`<results_dir>/{{module_name}}.vcd`** (or a clearly named equivalent under the same folder)
+4. Optional: CSV dump(s): **`<results_dir>/{{module_name}}*.csv`**
+5. Update (or create) status file: **`<results_dir>/{{module_name}}_result.json`**
 
 ### VALIDATION
 
 - Testbench must compile with Icarus Verilog
-- It should run with `vvp` and complete without errors
+- You MUST run it with `vvp` and it must complete without errors
 - VCD (or equivalent) should be produced for debugging
 
 ### MANDATORY JSON OUTPUT
 
-At the **end** of your response, output exactly one JSON block:
+At the **end** of your response, output exactly one JSON block and ensure the same data is reflected in `<results_dir>/{{module_name}}_result.json`.
 
 ```json
 {
-  "tb_files": ["tb/{{module_name}}_tb.v"],
-  "simulation_passed": true,
-  "coverage_percentage": 100,
-  "plan_item_completed": true,
-  "version": "issue_number_YYYYMMDD"
+  "module": "{{module_name}}",
+  "rtl_done": false,
+  "tb_done": true,
+  "doc_done": false,
+  "simulation_passed": false,
+  "coverage_completed": false,
+  "coverage_percentage": 0,
+  "plan_item_completed": false,
+  "error_summary": ""
 }
 ```
 
-- `simulation_passed`: `true` if the testbench has been run successfully (or is ready to run)
-- `coverage_percentage`: 0–100
-- `version`: e.g. `"42_20250311"`
+- `simulation_passed`: set to `true` ONLY if you actually executed `vvp` successfully in this run; otherwise it MUST be `false`.
+- `plan_item_completed`: MUST be `true` only when **RTL + TB + docs exist** and **simulation_passed is true**.
+- `error_summary`: empty if all checks pass; otherwise a concise 1–3 sentence description of what is failing and why.

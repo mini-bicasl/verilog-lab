@@ -12,29 +12,34 @@ trigger:
 context:
   required:
     - docs/ARCHITECTURE.md
-    - docs/ARCHITECTURE.md
   optional:
     - docs/PLAN.md
     - docs/INTERFACE_SPEC.md
     - docs/NAMING_CONVENTIONS.md
-    - docs/INTERFACE_SPEC.md
 
 inputs:
   module_name: "Parsed from issue body: 'Module name: <name>'"
+  phase_name: "Resolved phase name from docs/PLAN.md (used for results/phase-<phase_name>/ scoping)"
 
 deliverables:
   - path: "docs/{{ module_name }}.md"
     description: "Markdown documentation"
-  - path: "results/doc_output.json"
-    description: "JSON summary"
+  - path: "results/phase-{{ phase_name }}/{{ module_name }}_result.json"
+    description: "Per-module status JSON (doc_done flag + completion gating)"
 
 prompt_template: ".github/agents/prompt-templates/doc-template.md"
 
 validation:
   - "Documentation covers interfaces, behavior, and references ARCHITECTURE"
-  - "JSON output includes plan_item_completed"
+  - "results/phase-{{ phase_name }}/{{ module_name }}_result.json is updated with doc_done=true and accurate status fields"
 
 output_json_schema:
-  doc_files: ["docs/{{ module_name }}.md"]
-  plan_item_completed: true
-  version: "issue_number_YYYYMMDD"
+  module: "{{ module_name }}"
+  rtl_done: boolean
+  tb_done: boolean
+  doc_done: true
+  simulation_passed: boolean
+  coverage_completed: boolean
+  coverage_percentage: number
+  plan_item_completed: boolean
+  error_summary: string

@@ -12,34 +12,36 @@ trigger:
 context:
   required:
     - docs/ARCHITECTURE.md
-    - docs/ARCHITECTURE.md
   optional:
     - docs/PLAN.md
     - docs/INTERFACE_SPEC.md
     - docs/NAMING_CONVENTIONS.md
     - docs/TESTPLAN.md
-    - docs/INTERFACE_SPEC.md
-    - docs/TESTPLAN.md
   # Workflow builds full_context.md from required (first found) + optional if present
 
 inputs:
   module_name: "Parsed from issue body: 'Module name: <name>' or 'RTL module name: <name>'"
+  phase_name: "Resolved phase name from docs/PLAN.md (used for results/phase-<phase_name>/ scoping)"
 
 deliverables:
   - path: "rtl/{{ module_name }}.v"
     description: "Synthesizable Verilog RTL"
-  - path: "results/rtl_output.json"
-    description: "JSON summary (files, simulation_passed, coverage_percentage)"
+  - path: "results/phase-{{ phase_name }}/{{ module_name }}_result.json"
+    description: "Per-module status JSON (must reflect real compile/sim status)"
 
 prompt_template: ".github/agents/prompt-templates/rtl-template.md"
 
 validation:
   - "RTL compiles with Icarus Verilog"
-  - "JSON output includes simulation_passed, coverage_percentage, plan_item_completed"
+  - "results/phase-{{ phase_name }}/{{ module_name }}_result.json is updated with rtl_done=true and accurate status fields"
 
 output_json_schema:
-  rtl_files: ["rtl/{{ module_name }}.v"]
-  simulation_passed: true
+  module: "{{ module_name }}"
+  rtl_done: true
+  tb_done: boolean
+  doc_done: boolean
+  simulation_passed: boolean
+  coverage_completed: boolean
   coverage_percentage: number
-  plan_item_completed: true
-  version: "issue_number_YYYYMMDD"
+  plan_item_completed: boolean
+  error_summary: string
