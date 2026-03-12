@@ -1,5 +1,5 @@
 name: AI Implementation
-description: Generate RTL, testbench, and documentation for one module (uses ARCHITECTURE.md and PLAN.md)
+description: Agent reads docs/PLAN.md and implements the immediate phase (RTL, testbench, docs)
 title: "[Implementation] – "
 labels: ['AI-task', 'rtl', 'tb', 'doc']
 assignees: ['github-copilot']
@@ -9,27 +9,18 @@ body:
     id: issue_type
     attributes:
       label: "Select Issue Type"
-      description: "This form creates an Implementation issue. The workflow will run RTL, Testbench, and Documentation agents for the module you name below."
+      description: "This form creates an Implementation issue. The workflow runs RTL, Testbench, and Documentation agents. The agent must read docs/PLAN.md and execute the immediate phase (next unchecked items in the Incremental Implementation Order)."
       options:
         - Implementation
       default: 0
     validations:
       required: true
 
-  - type: input
-    id: module_name
-    attributes:
-      label: "Module name"
-      description: "Required. Must match a module in ARCHITECTURE.md (e.g. ddr4_ctrl_top, alu8, uart_tx). Used for rtl/<name>.v, tb/<name>_tb.v, docs/<name>.md."
-      placeholder: "e.g. ddr4_ctrl_top, alu8, uart_tx"
-    validations:
-      required: true
-
   - type: textarea
     id: issue_description
     attributes:
-      label: "Description (optional)"
-      description: "Leave blank and the agents will infer behavior from ARCHITECTURE.md and docs/PLAN.md. Optionally add a short hint (e.g. implement per PLAN.md)."
-      placeholder: "Optional: e.g. Implement this module according to ARCHITECTURE.md and PLAN.md."
+      label: "Instructions for the agent"
+      description: "The agent MUST read docs/PLAN.md and implement the immediate phase (next unchecked module(s) in the Incremental Implementation Order). Leave blank for default behavior, or add hints (e.g. skip to step 5, focus on RTL only)."
+      value: "Optional: e.g. Implement the immediate phase per PLAN.md. Use ARCHITECTURE.md for interfaces and behavior."
     validations:
-      required: false
+      required: true

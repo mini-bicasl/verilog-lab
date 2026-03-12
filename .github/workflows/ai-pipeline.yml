@@ -26,15 +26,41 @@ jobs:
       run_tb: ${{ steps.vars.outputs.run_tb }}
       run_doc: ${{ steps.vars.outputs.run_doc }}
     steps:
+      - name: Checkout repo (for PLAN.md)
+        uses: actions/checkout@v4
+
+      - name: Resolve immediate module from PLAN
+        id: plan
+        run: |
+          PLAN="${{ env.PLAN_PATH }}"
+          if [ ! -f "$PLAN" ]; then
+            echo "module_name=" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          # Unchecked modules in RTL section: lines like "- [ ] \`name\`"
+          UNCHECKED=$(grep -E '^\s*-\s+\[ \]\s*`' "$PLAN" | sed -n 's/.*`\([a-z0-9_]*\)`.*/\1/p' | tr '\n' ' ')
+          # Ordered list from "Incremental Implementation Order": numbered lines with `module` only
+          ORDERED=$(awk '/^## Incremental Implementation Order$/{p=1;next} /^## /{p=0} p && /^[0-9]+\./ && /\`[a-z0-9_]+\`/ {gsub(/`/,""); for(i=2;i<=NF;i++) if($i!~/^\+$/ && $i~/^[a-z0-9_]+$/) print $i}' "$PLAN" | tr '\n' ' ')
+          IMMEDIATE=""
+          for m in $ORDERED; do
+            if echo "$UNCHECKED" | grep -qw "$m"; then
+              IMMEDIATE="$m"
+              break
+            fi
+          done
+          echo "module_name=${IMMEDIATE:-}" >> $GITHUB_OUTPUT
+          echo "Resolved immediate module: ${IMMEDIATE:-<none>}"
+
       - name: Parse issue body
         id: vars
         run: |
           BODY=$(echo '${{ github.event.issue.body }}' | sed 's/\\r//g')
-          MODULE=$(echo "$BODY" | grep -i "module name" | head -1 | sed -n 's/.*:\s*\([A-Za-z0-9_]*\).*/\1/p' | xargs)
+          # Optional override: if user wrote "module name: xxx" or "Module: xxx" in description, use it
+          MODULE_FROM_BODY=$(echo "$BODY" | grep -iE '(module name|module):\s*[A-Za-z0-9_]+' | head -1 | sed -n 's/.*:\s*\([A-Za-z0-9_]*\).*/\1/p' | xargs)
+          FROM_PLAN="${{ steps.plan.outputs.module_name }}"
+          MODULE="${MODULE_FROM_BODY:-$FROM_PLAN}"
 
           # Decide which phase this issue represents.
-          # Implementation => run full generation (RTL + TB + Docs)
-          # Specification / Planning / Verification => no automatic generation.
           if echo "$BODY" | grep -q '\*\*Select Issue Type\*\*:\s*Implementation'; then
             echo "run_rtl=true" >> $GITHUB_OUTPUT
             echo "run_tb=true" >> $GITHUB_OUTPUT
@@ -47,10 +73,10 @@ jobs:
 
           echo "module_name=${MODULE:-}" >> $GITHUB_OUTPUT
 
-          # For Implementation, module_name is required.
+          # For Implementation: require module from PLAN (or optional override in description).
           if echo "$BODY" | grep -q '\*\*Select Issue Type\*\*:\s*Implementation'; then
             if [ -z "$MODULE" ] || [ "$MODULE" = "N/A" ]; then
-              echo "::error::Module name is required for Implementation. Set 'Module name' in the form."
+              echo "::error::No immediate module found. Ensure docs/PLAN.md exists and has an unchecked item in the Incremental Implementation Order, or specify 'Module: <name>' in the issue description."
               exit 1
             fi
           fi
