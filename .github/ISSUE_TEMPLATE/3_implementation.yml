@@ -9,7 +9,7 @@ body:
     id: issue_type
     attributes:
       label: "Select Issue Type"
-      description: "This form creates an Implementation issue. The workflow runs RTL, Testbench, and Documentation agents. The agent must read docs/PLAN.md and execute the immediate phase (next unchecked items in the Incremental Implementation Order)."
+      description: "This form creates an Implementation issue. The workflow runs RTL, Testbench, and Documentation agents. The agent must read docs/PLAN.md and execute the immediate phase (next unchecked items in the Incremental Implementation Order). The issue title will be updated automatically to include the resolved module name when the workflow runs."
       options:
         - Implementation
       default: 0

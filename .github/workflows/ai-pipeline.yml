@@ -9,7 +9,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  issues: read
+  issues: write
 
 env:
   ARCHITECTURE_PATH: docs/ARCHITECTURE.md
@@ -80,6 +80,11 @@ jobs:
               exit 1
             fi
           fi
+
+      - name: Update issue title with resolved module
+        if: steps.vars.outputs.module_name != ''
+        run: |
+          gh issue edit "${{ github.event.issue.number }}" --title "[Implementation] – ${{ steps.vars.outputs.module_name }}"
 
   rtl_generation:
     name: RTL Generation
