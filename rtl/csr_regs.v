@@ -74,10 +74,10 @@ always @(posedge clk) begin
         timing_profile_load <= 1'b0;
 
         if (ecc_single_error_inc) begin
-            ecc_single_error_count <= ecc_single_error_count + 1'b1;
+            ecc_single_error_count <= ecc_single_error_count + 32'd1;
         end
         if (ecc_double_error_inc) begin
-            ecc_double_error_count <= ecc_double_error_count + 1'b1;
+            ecc_double_error_count <= ecc_double_error_count + 32'd1;
         end
 
         if (csr_valid && csr_write) begin

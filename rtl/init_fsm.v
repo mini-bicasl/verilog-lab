@@ -65,7 +65,7 @@ always @(posedge clk) begin
                     timeout_error <= 1'b1;
                     busy          <= 1'b0;
                 end else begin
-                    wait_count <= wait_count + 1'b1;
+                    wait_count <= wait_count + 16'd1;
                 end
             end
 
