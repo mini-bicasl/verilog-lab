@@ -1,8 +1,8 @@
 name: Step 3 - Implementation
 description: Agent reads docs/PLAN.md and implements the immediate phase (RTL, testbench, docs)
-title: "[Implementation] – "
+title: "[Implementation] "
 labels: ['AI-task', 'rtl', 'tb', 'doc']
-assignees: ['github-copilot']
+assignees: ['Copilot']
 
 body:
   - type: dropdown

@@ -1,8 +1,8 @@
 name: Step 1 - Specification
 description: Capture high-level idea and generate/update ARCHITECTURE.md
-title: "[Specification] – "
+title: "[Specification] "
 labels: ['AI-task']
-assignees: ['github-copilot']
+assignees: ['Copilot']
 
 body:
   - type: dropdown

@@ -1,8 +1,8 @@
 name: Step 2 - Planning
 description: Generate or update the implementation plan (docs/PLAN.md) from ARCHITECTURE.md
-title: "[Planning] – "
+title: "[Planning] "
 labels: ['AI-task']
-assignees: ['github-copilot']
+assignees: ['Copilot']
 
 body:
   - type: dropdown

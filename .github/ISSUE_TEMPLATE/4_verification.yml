@@ -1,8 +1,8 @@
 name: Step 4 - Verification
 description: Add tests, tighten constraints, or refine RTL/docs (see INSTRUCTION.md Step 4)
-title: "[Verification] – "
+title: "[Verification] "
 labels: ['AI-task', 'verification']
-assignees: ['github-copilot']
+assignees: ['Copilot']
 
 body:
   - type: dropdown
